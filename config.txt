@@ -1,0 +1,11 @@
+{
+"username": "",
+"emailNotification": true,
+"emailUser": "",
+"host":"",
+"port":22,
+"laptop_id":"",
+"SourceFolder":"",
+"DestinationFolder":"",
+"ModelList":{}
+}
