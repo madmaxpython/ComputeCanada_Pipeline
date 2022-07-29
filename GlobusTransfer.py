@@ -106,7 +106,7 @@ def TransferGlobus(username,
               recursive=True)
    
    transfer_result = transfer.submit_transfer(tdata)
-   
+   print("Transfering your file to Compute Canada cluster")
    print("task_id =", transfer_result["task_id"])
    
    while not transfer.task_wait(transfer_result["task_id"], timeout=5):
