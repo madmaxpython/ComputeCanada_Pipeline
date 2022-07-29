@@ -13,10 +13,11 @@ import paramiko
 
 import json
 from utils import enable_requests_logging, is_remote_session
-from connectcc import RunJobComputeCC
+from connectcc import ComputeCanadaJob
 
 
 script_path = str(Path(__file__).parent)
+
 
 with open(script_path+'/config.txt', "r") as config_file:
     config = json.loads(config_file.read())
@@ -26,11 +27,11 @@ REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
 
 SCOPES = "urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/a1713da6-098f-40e6-b3aa-034efe8b6e5b/data_access]"
 
-LAPTOP_ID= config["laptop_id"]
+LAPTOP_ID= config["user_id"]
 
-CLIENT_ID = "ce15da75-1dd2-49ee-b980-3871b7c6034f"
+CLIENT_ID = config["client_id"]
 
-COMPUTECC_ENDPOINT_ID = "a1713da6-098f-40e6-b3aa-034efe8b6e5b"
+COMPUTECC_ENDPOINT_ID = config["computecanada_id"]
 
 
 if __name__ == "__main__":
@@ -40,7 +41,7 @@ if __name__ == "__main__":
            config[parameters]=input('{}? : '.format(parameters))
         
     
-    username=config['username']
+    USERNAME=config['username']
     
     MODEL_PATH=""
 
@@ -56,7 +57,7 @@ if __name__ == "__main__":
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
             
-    TransferGlobus(username,
+    TransferGlobus(USERNAME,
                    LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECC_ENDPOINT_ID,
@@ -66,5 +67,5 @@ if __name__ == "__main__":
                    MODEL_PATH
                    )
     
-    RunJobComputeCC(username, config)
+    ComputeCanadaJob(config, USERNAME)
     
