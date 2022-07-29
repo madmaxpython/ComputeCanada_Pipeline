@@ -1,10 +1,12 @@
 {
 "username": "",
-"emailNotification": true,
+"emailNotification":true,
 "emailUser": "",
 "host":"",
 "port":22,
-"laptop_id":"",
+"user_id":"",
+"client_id":"",
+"computecanada_id":"",
 "SourceFolder":"",
 "DestinationFolder":"",
 "ModelList":{}
