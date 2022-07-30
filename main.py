@@ -10,13 +10,10 @@ from pathlib import Path
 import json
 from connectcc import ComputeCanadaJob
 
-
 script_path = str(Path(__file__).parent)
 
-
-with open(script_path+'/config.txt', "r") as config_file:
+with open(script_path + '/config.txt', "r") as config_file:
     config = json.loads(config_file.read())
-
 
 REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
 
@@ -27,7 +24,6 @@ LAPTOP_ID = config["user_id"]
 CLIENT_ID = config["client_id"]
 
 COMPUTECC_ENDPOINT_ID = config["computecanada_id"]
-
 
 if __name__ == "__main__":
 
@@ -45,14 +41,13 @@ if __name__ == "__main__":
         try:
             MODEL_PATH = config['ModelList'][ASKED_MODEL]
 
-        except :
-            print('\nModel dont exist, select on of the model bellow:')
+        except:
+            print("\nModel don't exist, select on of the model bellow:")
 
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
-    print(MODEL_PATH)
-    TransferGlobus(USERNAME,
-                   LAPTOP_ID,
+
+    TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECC_ENDPOINT_ID,
                    REDIRECT_URI,
