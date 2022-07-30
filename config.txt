@@ -1,13 +1,13 @@
 {
-"username": "",
+"username": "maxtex",
 "emailNotification":true,
-"emailUser": "",
-"host":"",
+"emailUser": "maxime.teixeira@mail.mcgill.ca",
+"host":"narval.computecanada.ca",
 "port":22,
-"user_id":"",
-"client_id":"",
-"computecanada_id":"",
-"SourceFolder":"",
-"DestinationFolder":"",
-"ModelList":{}
+"user_id":"6ceb677a-e736-11ec-9bd1-2d2219dcc1fa",
+"client_id":"ce15da75-1dd2-49ee-b980-3871b7c6034f",
+"computecanada_id":"a1713da6-098f-40e6-b3aa-034efe8b6e5b",
+"SourceFolder":"/Users/maximeteixeira/Desktop/ComputeCanadaPipeline/ToBeTransfered",
+"DestinationFolder":"projects/def-cflores/python_envs/CPPmodel/videos",
+"ModelList":{"CPP":"projects/def-cflores/python_envs/CPPmodel/videos","DeepOF":"projects/def-cflores/python_envs/DeepOFmodel/videos"}
 }

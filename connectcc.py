@@ -12,11 +12,11 @@ import json
 from pathlib import Path
     
 class ComputeCanadaJob():
-    def __init__(self, config, username):
+    def __init__(self, config, username, model_path):
         self.config = config
         
         self.username=username
-        
+        self.model_path=model_path
         self.sshConnection()
         self.Analyze()
         
@@ -52,7 +52,7 @@ class ComputeCanadaJob():
             spec+=" --mail-user="+str(self.config['emailUser'])
             
             
-        self.client.exec_command("sbatch"+spec+" /home/"+self.username+"/projects/def-cflores/python_envs/First_job_cc/slurmdeeplodocus.slurm "+ JobName)
+        self.client.exec_command("sbatch"+spec+self.model_path+JobName)
 
         print("Job sent")
         
