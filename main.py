@@ -47,13 +47,6 @@ if __name__ == "__main__":
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
 
-    TransferGlobus(LAPTOP_ID,
-                   CLIENT_ID,
-                   COMPUTECC_ENDPOINT_ID,
-                   REDIRECT_URI,
-                   SCOPES,
-                   config['SourceFolder'],
-                   MODEL_PATH
-                   )
+    TransferGlobus(LAPTOP_ID, CLIENT_ID, COMPUTECC_ENDPOINT_ID, REDIRECT_URI, SCOPES, MODEL_PATH)
 
     ComputeCanadaJob(config, USERNAME, MODEL_PATH)

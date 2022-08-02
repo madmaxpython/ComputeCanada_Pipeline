@@ -8,7 +8,7 @@ from globus_sdk import NativeAppAuthClient, TransferClient, TransferData, Refres
 from globus_sdk.exc import GlobusAPIError
 
 from utils import is_remote_session
-
+from tkinter import Tk, filedialog
 TOKEN_FILE = "refresh-tokens.json"
 
 
@@ -52,16 +52,19 @@ def do_native_app_authentication(client_id, redirect_uri, SCOPES, requested_scop
     # return a set of tokens, organized by resource server name
     return token_response.by_resource_server
 
-
+def FileSelector():
+    root = Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilenames()
+    return file_path
 def TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECC_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
-                   SOURCE_FOLDER,
                    DESTINATION_FOLDER):
     """
-   Transfer files contains from SOURCE_FOLDER to DESTINATION_FOLDER
+   Transfer files selected by the user to DESTINATION_FOLDER
    and wait  the transfer to be completed 
    """
     tokens = None
@@ -107,14 +110,16 @@ def TransferGlobus(LAPTOP_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
-    tdata.add_item(SOURCE_FOLDER, DESTINATION_FOLDER,
-                   recursive=True)
+    file_to_transfer = FileSelector()
+
+    for file in file_to_transfer :
+        tdata.add_item(file, DESTINATION_FOLDER+'/'+file.split('/')[-1])
 
     transfer_result = transfer.submit_transfer(tdata)
     print("Transfering your file to Compute Canada cluster")
     print("task_id =", transfer_result["task_id"])
 
-    while not transfer.task_wait(transfer_result["task_id"], timeout=5):
+    while not transfer.task_wait(transfer_result["task_id"], timeout=10):
         print("Task {0} is running"
               .format(transfer_result["task_id"]))
 
