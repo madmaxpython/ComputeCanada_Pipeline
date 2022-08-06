@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 "username": "",
+=======
+"username": "maxtex",
+>>>>>>> parent of ca03621 (dsfbc x)
 "emailNotification":true,
 "emailUser": "",
 "host":"",
