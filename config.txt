@@ -1,5 +1,5 @@
 {
-"username": "maxtex",
+"username": "",
 "emailNotification":true,
 "emailUser": "",
 "host":"",
