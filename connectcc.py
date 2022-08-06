@@ -1,21 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-Created on Mon Jun 27 12:23:25 2022
-
-@author: maximeteixeira
-"""
-
 import paramiko
 
-
 class ComputeCanadaJob:
-    def __init__(self, config, username, model_path):
+    def __init__(self, config, username, model_path, job_path, deeplodocus_path, destination_folder, job_name):
         self.config = config
-
         self.username = username
         self.model_path = model_path
+        self.job_path = job_path
+        self.deeplodocus_path = deeplodocus_path
+        self.destination_folder = destination_folder
+        self.job_name = job_name
+        self.model_name = self.model_path.split('/')[-1]
         self.ssh_connection()
         self.analyze()
 
@@ -37,19 +31,25 @@ class ComputeCanadaJob:
                 print(e, "Please, verify your password and retry")
 
     def analyze(self):
-        print('\nMake sure that you have place all your video in the following folder: ')
-        print('/home/{}/projects/def-cflores/python_envs/CPPmodel/videos \n'.format(self.username))
+        print('\nMake sure that you have placed all your videos in the following folder: ')
+        print('/home/{}/projects/def-cflores/{}/videos_to_analyze \n'.format(self.username,self.username))
         print('To analyze a 20 min video of CPP, it takes around 10 min \n ')
 
         time = str(input("Estimated time needed (respect format: HH:MM:SS): "))
-
-        JobName = str(input("Job Name: "))
 
         spec = ' --time=' + time
 
         if self.config['emailNotification']:
             spec += " --mail-user=" + str(self.config['emailUser'])
 
-        self.client.exec_command("sbatch" + spec + " " + "/home/{}/projects/def-cflores/python_envs/First_job_cc/slurmdeeplodocus.slurm".format(self.username) + " " + JobName)
+        self.client.exec_command("mkdir" + " " + self.job_path)
+
+        self.client.exec_command("cp" + " " + self.model_path + " " + self.job_path)
+
+        self.client.exec_command("cp" + " " + self.deeplodocus_path + " " + self.job_path)
+
+        self.client.exec_command("cp" + " " + self.destination_folder + " " + self.job_path + '/' + self.model_name + '/videos')
+
+        self.client.exec_command("sbatch" + spec + " " + self.job_path + "Deeplodocus/bash_deeplodocus.slurm" + " " + self.job_name + ' ' + self.model_name)
 
         print("Job sent")
