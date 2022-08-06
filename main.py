@@ -47,6 +47,17 @@ if __name__ == "__main__":
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
 
+<<<<<<< HEAD
     TransferGlobus(LAPTOP_ID, CLIENT_ID, COMPUTECC_ENDPOINT_ID, REDIRECT_URI, SCOPES, MODEL_PATH)
+=======
+    TransferGlobus(LAPTOP_ID,
+                   CLIENT_ID,
+                   COMPUTECC_ENDPOINT_ID,
+                   REDIRECT_URI,
+                   SCOPES,
+                   config['SourceFolder'],
+                   MODEL_PATH
+                   )
+>>>>>>> parent of e31fac1 (Merge pull request #1 from madmaxpython/parallel_processing)
 
     ComputeCanadaJob(config, USERNAME, MODEL_PATH)

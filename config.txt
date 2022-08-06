@@ -1,12 +1,21 @@
 {
+<<<<<<< HEAD
 "username": "maxtex",
 "emailNotification":true,
+=======
+"username": "",
+"emailNotification":,
+>>>>>>> parent of e31fac1 (Merge pull request #1 from madmaxpython/parallel_processing)
 "emailUser": "",
 "host":"",
 "port":22,
 "user_id":"",
 "client_id":"",
 "computecanada_id":"",
+<<<<<<< HEAD
+=======
+"SourceFolder":"",
+>>>>>>> parent of e31fac1 (Merge pull request #1 from madmaxpython/parallel_processing)
 "DestinationFolder":"",
 "ModelList":{}
 }

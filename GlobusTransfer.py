@@ -62,9 +62,14 @@ def TransferGlobus(LAPTOP_ID,
                    COMPUTECC_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
+                   SOURCE_FOLDER,
                    DESTINATION_FOLDER):
     """
+<<<<<<< HEAD
    Transfer files selected by the user to DESTINATION_FOLDER
+=======
+   Transfer files contains from SOURCE_FOLDER to DESTINATION_FOLDER
+>>>>>>> parent of e31fac1 (Merge pull request #1 from madmaxpython/parallel_processing)
    and wait  the transfer to be completed 
    """
     tokens = None
@@ -110,10 +115,8 @@ def TransferGlobus(LAPTOP_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
-    file_to_transfer = FileSelector()
-
-    for file in file_to_transfer :
-        tdata.add_item(file, DESTINATION_FOLDER+'/'+file.split('/')[-1])
+    tdata.add_item(SOURCE_FOLDER, DESTINATION_FOLDER,
+                   recursive=True)
 
     transfer_result = transfer.submit_transfer(tdata)
     print("Transfering your file to Compute Canada cluster")
