@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-
 import json
 import sys
 import webbrowser
+from tkinter import Tk, filedialog
 
 from globus_sdk import NativeAppAuthClient, TransferClient, TransferData, RefreshTokenAuthorizer
 from globus_sdk.exc import GlobusAPIError
@@ -11,6 +10,11 @@ from utils import is_remote_session
 
 TOKEN_FILE = "refresh-tokens.json"
 
+def FileSelector():
+    root = Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilenames()
+    return file_path
 
 def load_tokens_from_file(filepath):
     """Load a set of saved tokens."""
@@ -55,14 +59,13 @@ def do_native_app_authentication(client_id, redirect_uri, SCOPES, requested_scop
 
 def TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
-                   COMPUTECC_ENDPOINT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
-                   SOURCE_FOLDER,
                    DESTINATION_FOLDER):
     """
-   Transfer files contains from SOURCE_FOLDER to DESTINATION_FOLDER
-   and wait  the transfer to be completed 
+   Transfer files located in SOURCE_FOLDER to DESTINATION_FOLDER
+   and wait for the transfer to be completed
    """
     tokens = None
     try:
@@ -91,7 +94,7 @@ def TransferGlobus(LAPTOP_ID,
 
     transfer = TransferClient(authorizer=authorizer)
     try:
-        transfer.endpoint_autoactivate(COMPUTECC_ENDPOINT_ID)
+        transfer.endpoint_autoactivate(COMPUTECANADA_ENDPOINT_ID)
     except GlobusAPIError as ex:
         print(ex)
         if ex.http_status == 401:
@@ -103,12 +106,14 @@ def TransferGlobus(LAPTOP_ID,
             raise ex
 
     tdata = TransferData(transfer, LAPTOP_ID,
-                         COMPUTECC_ENDPOINT_ID,
+                         COMPUTECANADA_ENDPOINT_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
-    tdata.add_item(SOURCE_FOLDER, DESTINATION_FOLDER,
-                   recursive=True)
+    file_to_transfer = FileSelector()
+
+    for file in file_to_transfer :
+        tdata.add_item(file, DESTINATION_FOLDER+'/'+file.split('/')[-1])
 
     transfer_result = transfer.submit_transfer(tdata)
     print("Transfering your file to Compute Canada cluster")

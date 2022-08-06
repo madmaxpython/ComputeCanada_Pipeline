@@ -1,13 +1,12 @@
-{
-"username": "",
-"emailNotification":,
+{"username": "",
+"emailNotification":true,
 "emailUser": "",
-"host":"",
+"host":"narval.computecanada.ca",
 "port":22,
 "user_id":"",
 "client_id":"",
-"computecanada_id":"",
-"SourceFolder":"",
-"DestinationFolder":"",
-"ModelList":{}
-}
+"computecanada_id":"a1713da6-098f-40e6-b3aa-034efe8b6e5b",
+"DestinationFolder":"/home/$USER/projects/def-cflores/$USER/videos_to_analyze",
+"DeeplodocusFolder":"/home/$USER/projects/def-cflores/python_envs/Deeplodocus",
+"TemporaryFolder":"/home/$USER/scratch",
+"ModelList":{"CPP":"/home/$USER/projects/def-cflores/python_envs/CPPmodel"}}
