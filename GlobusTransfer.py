@@ -1,16 +1,22 @@
-#!/usr/bin/env python
-
 import json
 import sys
 import webbrowser
+from tkinter import Tk, filedialog
 
 from globus_sdk import NativeAppAuthClient, TransferClient, TransferData, RefreshTokenAuthorizer
 from globus_sdk.exc import GlobusAPIError
 
 from utils import is_remote_session
-from tkinter import Tk, filedialog
-TOKEN_FILE = "refresh-tokens.json"
+from pathlib import Path
 
+SCRIPT_PATH = str(Path(__file__).parent)
+TOKEN_FILE = SCRIPT_PATH + "refresh-tokens.json"
+
+def FileSelector():
+    root = Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilenames()
+    return file_path
 
 def load_tokens_from_file(filepath):
     """Load a set of saved tokens."""
@@ -52,20 +58,16 @@ def do_native_app_authentication(client_id, redirect_uri, SCOPES, requested_scop
     # return a set of tokens, organized by resource server name
     return token_response.by_resource_server
 
-def FileSelector():
-    root = Tk()
-    root.withdraw()
-    file_path = filedialog.askopenfilenames()
-    return file_path
+
 def TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
-                   COMPUTECC_ENDPOINT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
                    DESTINATION_FOLDER):
     """
-   Transfer files selected by the user to DESTINATION_FOLDER
-   and wait  the transfer to be completed 
+   Transfer files located in SOURCE_FOLDER to DESTINATION_FOLDER
+   and wait for the transfer to be completed
    """
     tokens = None
     try:
@@ -94,7 +96,7 @@ def TransferGlobus(LAPTOP_ID,
 
     transfer = TransferClient(authorizer=authorizer)
     try:
-        transfer.endpoint_autoactivate(COMPUTECC_ENDPOINT_ID)
+        transfer.endpoint_autoactivate(COMPUTECANADA_ENDPOINT_ID)
     except GlobusAPIError as ex:
         print(ex)
         if ex.http_status == 401:
@@ -106,7 +108,7 @@ def TransferGlobus(LAPTOP_ID,
             raise ex
 
     tdata = TransferData(transfer, LAPTOP_ID,
-                         COMPUTECC_ENDPOINT_ID,
+                         COMPUTECANADA_ENDPOINT_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
@@ -119,7 +121,7 @@ def TransferGlobus(LAPTOP_ID,
     print("Transfering your file to Compute Canada cluster")
     print("task_id =", transfer_result["task_id"])
 
-    while not transfer.task_wait(transfer_result["task_id"], timeout=10):
+    while not transfer.task_wait(transfer_result["task_id"], timeout=5):
         print("Task {0} is running"
               .format(transfer_result["task_id"]))
 
