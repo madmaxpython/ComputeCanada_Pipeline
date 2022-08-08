@@ -44,11 +44,11 @@ class ComputeCanadaJob:
 
         self.client.exec_command("mkdir" + " " + self.job_path)
 
-        self.client.exec_command("cp" + " " + self.model_path + " " + self.job_path)
+        self.client.exec_command("cp -r " + self.model_path + " " + self.job_path)
 
-        self.client.exec_command("cp" + " " + self.deeplodocus_path + " " + self.job_path)
+        self.client.exec_command("cp -r " + self.deeplodocus_path + " " + self.job_path)
 
-        self.client.exec_command("cp" + " " + self.destination_folder + " " + self.job_path + '/' + self.model_name + '/videos')
+        self.client.exec_command("cp -r " + self.destination_folder + " " + self.job_path + '/' + self.model_name + '/videos')
 
         self.client.exec_command("sbatch" + spec + " " + self.job_path + "Deeplodocus/bash_deeplodocus.slurm" + " " + self.job_name + ' ' + self.model_name)
 

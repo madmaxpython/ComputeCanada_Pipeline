@@ -7,8 +7,10 @@ from globus_sdk import NativeAppAuthClient, TransferClient, TransferData, Refres
 from globus_sdk.exc import GlobusAPIError
 
 from utils import is_remote_session
+from pathlib import Path
 
-TOKEN_FILE = "refresh-tokens.json"
+SCRIPT_PATH = str(Path(__file__).parent)
+TOKEN_FILE = SCRIPT_PATH + "refresh-tokens.json"
 
 def FileSelector():
     root = Tk()

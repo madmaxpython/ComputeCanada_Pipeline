@@ -20,9 +20,9 @@ COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
 
 USERNAME = config['username']
 
-DESTINATION_FOLDER = config['DestinationFolder']
+DESTINATION_FOLDER = config['DestinationFolder'].replace('$USER',USERNAME)
 
-DEEPLODOCUS_FOLDER = config['DeeplodocusFolder']
+DEEPLODOCUS_FOLDER = config['DeeplodocusFolder'].replace('$USER',USERNAME)
 
 
 if __name__ == "__main__":
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         ASKED_MODEL = str(input("What behavior do you want to analyze? (only CPP for now...) "))
 
         try:
-            MODEL_PATH = config['ModelList'][ASKED_MODEL]
+            MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER',USERNAME)
 
         except:
             print("\nModel doesn't exist, select one of the models below:")
@@ -55,6 +55,6 @@ if __name__ == "__main__":
 
     JOB_NAME = str(input("Job name: "))
 
-    JOB_PATH = config['TemporaryFolder'] + JOB_NAME
+    JOB_PATH = config['TemporaryFolder'].replace('$USER',USERNAME) +'/'+ JOB_NAME
 
     ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, DEEPLODOCUS_FOLDER, DESTINATION_FOLDER, JOB_NAME)
