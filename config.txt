@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
 "username": "",
-=======
-"username": "maxtex",
->>>>>>> parent of ca03621 (dsfbc x)
 "emailNotification":true,
 "emailUser": "",
 "host":"",
@@ -11,6 +7,7 @@
 "user_id":"",
 "client_id":"",
 "computecanada_id":"",
-"DestinationFolder":"",
+"DeeplodocusFolder":"",
+"TemporaryFolder":"",
 "ModelList":{}
 }
