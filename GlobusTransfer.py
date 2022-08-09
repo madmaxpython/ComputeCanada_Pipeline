@@ -12,11 +12,13 @@ from pathlib import Path
 SCRIPT_PATH = str(Path(__file__).parent)
 TOKEN_FILE = SCRIPT_PATH + "refresh-tokens.json"
 
+
 def FileSelector():
     root = Tk()
     root.withdraw()
     file_path = filedialog.askopenfilenames()
     return file_path
+
 
 def load_tokens_from_file(filepath):
     """Load a set of saved tokens."""
@@ -114,15 +116,127 @@ def TransferGlobus(LAPTOP_ID,
 
     file_to_transfer = FileSelector()
 
-    for file in file_to_transfer :
-        tdata.add_item(file, DESTINATION_FOLDER+'/'+file.split('/')[-1])
+    for file in file_to_transfer:
+        tdata.add_item(file, DESTINATION_FOLDER + '/' + file.split('/')[-1])
 
     transfer_result = transfer.submit_transfer(tdata)
     print("Transfering your file to Compute Canada cluster")
     print("task_id =", transfer_result["task_id"])
 
     while not transfer.task_wait(transfer_result["task_id"], timeout=5):
-        print("Task {0} is running"
-              .format(transfer_result["task_id"]))
+        print('Files in transfer')
+
+    print("Task completed")
+
+
+def mkdirGlobus(CLIENT_ID,
+                COMPUTECANADA_ENDPOINT_ID,
+                REDIRECT_URI,
+                SCOPES,
+                PATH_MKDIR):
+    tokens = None
+    try:
+        # if we already have tokens, load and use them
+        tokens = load_tokens_from_file(TOKEN_FILE)
+    except:
+        pass
+
+    if not tokens:
+        # if we need to get tokens, start the Native App authentication process
+        tokens = do_native_app_authentication(CLIENT_ID, REDIRECT_URI, SCOPES)
+        try:
+            save_tokens_to_file(TOKEN_FILE, tokens)
+        except:
+            pass
+
+    transfer_tokens = tokens["transfer.api.globus.org"]
+    auth_client = NativeAppAuthClient(client_id=CLIENT_ID)
+
+    authorizer = RefreshTokenAuthorizer(
+        transfer_tokens["refresh_token"],
+        auth_client,
+        access_token=transfer_tokens["access_token"],
+        expires_at=transfer_tokens["expires_at_seconds"],
+        on_refresh=update_tokens_file_on_refresh, )
+
+    transfer = TransferClient(authorizer=authorizer)
+    try:
+        transfer.endpoint_autoactivate(COMPUTECANADA_ENDPOINT_ID)
+    except GlobusAPIError as ex:
+        print(ex)
+        if ex.http_status == 401:
+            sys.exit(
+                "Refresh token has expired. "
+                "Please delete refresh-tokens.json and try again."
+            )
+        else:
+            raise ex
+    transfer.operation_mkdir(COMPUTECANADA_ENDPOINT_ID, PATH_MKDIR)
+
+
+def copyGlobus(CLIENT_ID,
+               COMPUTECANADA_ENDPOINT_ID,
+               REDIRECT_URI,
+               SCOPES,
+               SOURCE_FOLDER,
+               DESTINATION_FOLDER,
+               IS_A_FOLDER):
+    """
+   Transfer files located in SOURCE_FOLDER to DESTINATI,ON_FOLDER
+   and wait for the transfer to be completed
+   """
+    tokens = None
+    try:
+        # if we already have tokens, load and use them
+        tokens = load_tokens_from_file(TOKEN_FILE)
+    except:
+        pass
+
+    if not tokens:
+        # if we need to get tokens, start the Native App authentication process
+        tokens = do_native_app_authentication(CLIENT_ID, REDIRECT_URI, SCOPES)
+        try:
+            save_tokens_to_file(TOKEN_FILE, tokens)
+        except:
+            pass
+
+    transfer_tokens = tokens["transfer.api.globus.org"]
+    auth_client = NativeAppAuthClient(client_id=CLIENT_ID)
+
+    authorizer = RefreshTokenAuthorizer(
+        transfer_tokens["refresh_token"],
+        auth_client,
+        access_token=transfer_tokens["access_token"],
+        expires_at=transfer_tokens["expires_at_seconds"],
+        on_refresh=update_tokens_file_on_refresh, )
+
+    transfer = TransferClient(authorizer=authorizer)
+    try:
+        transfer.endpoint_autoactivate(COMPUTECANADA_ENDPOINT_ID)
+    except GlobusAPIError as ex:
+        print(ex)
+        if ex.http_status == 401:
+            sys.exit(
+                "Refresh token has expired. "
+                "Please delete refresh-tokens.json and try again."
+            )
+        else:
+            raise ex
+
+    tdata = TransferData(transfer, COMPUTECANADA_ENDPOINT_ID,
+                         COMPUTECANADA_ENDPOINT_ID,
+                         label="File Transfer",
+                         sync_level="checksum")
+
+    tdata.add_item(SOURCE_FOLDER, DESTINATION_FOLDER, recursive=IS_A_FOLDER)
+
+    transfer_result = transfer.submit_transfer(tdata)
+    print("Transferring your file to Compute Canada cluster:")
+    print("From: ", SOURCE_FOLDER)
+    print("To: ", DESTINATION_FOLDER)
+    print("task_id =", transfer_result["task_id"])
+
+    while not transfer.task_wait(transfer_result["task_id"], timeout=5):
+        print('Files in transfer')
 
     print("Task completed")

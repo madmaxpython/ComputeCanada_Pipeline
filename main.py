@@ -1,6 +1,7 @@
-from GlobusTransfer import TransferGlobus
+from GlobusTransfer import TransferGlobus, mkdirGlobus, copyGlobus
 from pathlib import Path
 import json
+import os
 from connectcc import ComputeCanadaJob
 
 script_path = str(Path(__file__).parent)
@@ -20,10 +21,7 @@ COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
 
 USERNAME = config['username']
 
-DESTINATION_FOLDER = config['DestinationFolder'].replace('$USER',USERNAME)
-
-DEEPLODOCUS_FOLDER = config['DeeplodocusFolder'].replace('$USER',USERNAME)
-
+DEEPLODOCUS_FOLDER = config['DeeplodocusFolder'].replace('$USER', USERNAME)
 
 if __name__ == "__main__":
 
@@ -37,7 +35,7 @@ if __name__ == "__main__":
         ASKED_MODEL = str(input("What behavior do you want to analyze? (only CPP for now...) "))
 
         try:
-            MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER',USERNAME)
+            MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER', USERNAME)
 
         except:
             print("\nModel doesn't exist, select one of the models below:")
@@ -45,16 +43,38 @@ if __name__ == "__main__":
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
 
+    JOB_NAME = str(input("Job name: "))
+
+    JOB_PATH = os.path.join(config['TemporaryFolder'].replace('$USER', USERNAME), JOB_NAME)
+
+    mkdirGlobus(CLIENT_ID,
+                COMPUTECANADA_ENDPOINT_ID,
+                REDIRECT_URI,
+                SCOPES,
+                JOB_PATH)
+
+    copyGlobus(CLIENT_ID,
+               COMPUTECANADA_ENDPOINT_ID,
+               REDIRECT_URI,
+               SCOPES,
+               MODEL_PATH,
+               os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1]),
+               True)
+
     TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECANADA_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
-                   DESTINATION_FOLDER
+                   os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1], 'videos/'),
                    )
 
-    JOB_NAME = str(input("Job name: "))
+    copyGlobus(CLIENT_ID,
+               COMPUTECANADA_ENDPOINT_ID,
+               REDIRECT_URI,
+               SCOPES,
+               '/home/$USER/projects/def-cflores/Scripts/Behavior_tracking'.replace('$USER', USERNAME),
+               JOB_PATH,
+               True)
 
-    JOB_PATH = config['TemporaryFolder'].replace('$USER',USERNAME) +'/'+ JOB_NAME
-
-    ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, DEEPLODOCUS_FOLDER, DESTINATION_FOLDER, JOB_NAME)
+    ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME)
