@@ -1,5 +1,6 @@
 import json
 import sys
+import os
 import webbrowser
 from tkinter import Tk, filedialog
 
@@ -10,8 +11,9 @@ from utils import is_remote_session
 from pathlib import Path
 
 SCRIPT_PATH = str(Path(__file__).parent)
-TOKEN_FILE = SCRIPT_PATH + "refresh-tokens.json"
-
+print(SCRIPT_PATH)
+TOKEN_FILE = SCRIPT_PATH + "/refresh-tokens.json"
+print(TOKEN_FILE)
 
 def FileSelector():
     root = Tk()
@@ -117,16 +119,19 @@ def TransferGlobus(LAPTOP_ID,
     file_to_transfer = FileSelector()
 
     for file in file_to_transfer:
-        tdata.add_item(file, DESTINATION_FOLDER + '/' + file.split('/')[-1])
+        tdata.add_item(file, DESTINATION_FOLDER + file.split('/')[-1])
 
     transfer_result = transfer.submit_transfer(tdata)
+    print("_____________________________________________________________")
     print("Transfering your file to Compute Canada cluster")
-    print("task_id =", transfer_result["task_id"])
 
+    print("task_id =", transfer_result["task_id"])
+    print('Files in transfer')
     while not transfer.task_wait(transfer_result["task_id"], timeout=5):
-        print('Files in transfer')
+        pass
 
     print("Task completed")
+    print("_____________________________________________________________")
 
 
 def mkdirGlobus(CLIENT_ID,
@@ -231,12 +236,14 @@ def copyGlobus(CLIENT_ID,
     tdata.add_item(SOURCE_FOLDER, DESTINATION_FOLDER, recursive=IS_A_FOLDER)
 
     transfer_result = transfer.submit_transfer(tdata)
-    print("Transferring your file to Compute Canada cluster:")
+    print("_____________________________________________________________")
+    print("Copying necessary files for analysis:")
     print("From: ", SOURCE_FOLDER)
     print("To: ", DESTINATION_FOLDER)
     print("task_id =", transfer_result["task_id"])
-
+    print('Files in transfer')
     while not transfer.task_wait(transfer_result["task_id"], timeout=5):
-        print('Files in transfer')
+        pass
 
     print("Task completed")
+    print("_____________________________________________________________")
