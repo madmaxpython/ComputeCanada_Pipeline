@@ -4,24 +4,11 @@ import json
 import os
 from connectcc import ComputeCanadaJob
 
-script_path = str(Path(__file__).parent)
+SCRIPT_PATH = str(Path(__file__).parent)
 
-with open(script_path + '/config.txt', "r") as config_file:
+with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
     config = json.loads(config_file.read())
 
-REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
-
-SCOPES = "urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/a1713da6-098f-40e6-b3aa-034efe8b6e5b/data_access]"
-
-LAPTOP_ID = config["user_id"]
-
-CLIENT_ID = config["client_id"]
-
-COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
-
-USERNAME = config['username']
-
-DEEPLODOCUS_FOLDER = config['DeeplodocusFolder'].replace('$USER', USERNAME)
 
 if __name__ == "__main__":
 
@@ -29,7 +16,26 @@ if __name__ == "__main__":
         if config[parameter] == '':
             config[parameter] = input('{}? : '.format(parameter))
 
+        strconfig = json.dumps(config)
+
+        with open(SCRIPT_PATH + '/config.txt', 'w') as file:
+            file.write(strconfig)
+
+    LAPTOP_ID = config["user_id"]
+
+    CLIENT_ID = config["client_id"]
+
+    COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
+
+    SCOPES = f"urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/{COMPUTECANADA_ENDPOINT_ID}/data_access]"
+
+    REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
+
+    USERNAME = config['username']
+
     MODEL_PATH = ""
+
+    SCRIPT_FOLDER = config['script_folder']
 
     while MODEL_PATH == "":
         ASKED_MODEL = str(input("What behavior do you want to analyze? (only CPP for now...) "))
@@ -73,7 +79,7 @@ if __name__ == "__main__":
                COMPUTECANADA_ENDPOINT_ID,
                REDIRECT_URI,
                SCOPES,
-               '/home/$USER/projects/def-cflores/Scripts/Behavior_tracking'.replace('$USER', USERNAME),
+               SCRIPT_FOLDER.replace('$USER', USERNAME),
                JOB_PATH,
                True)
 
