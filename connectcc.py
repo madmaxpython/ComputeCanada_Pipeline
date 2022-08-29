@@ -38,10 +38,7 @@ class ComputeCanadaJob:
 
         spec = ' --time=' + time
 
-        if self.config['emailNotification']:
-            spec += " --mail-user=" + str(self.config['emailUser'])
-
         self.client.exec_command(
-            "sbatch" + spec + " " + self.job_path + "/bash_deeplodocus.slurm" + " " + self.job_name + ' ' + self.model_name)
+            "sbatch" + spec + " " + self.job_path + "/submit_job.sh" + " " + self.job_name + ' ' + self.model_name)
 
         print("Job sent")
