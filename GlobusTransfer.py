@@ -121,7 +121,7 @@ def TransferGlobus(LAPTOP_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
-    file_to_transfer = FileSelector("Select video to analyze ", True, filetypes=[("Video files", ".mp4 .MOV .avi")])
+    file_to_transfer = FileSelector("Select video to analyze ", True, [("Video files", ".mp4 .MOV .avi")])
 
     for file in file_to_transfer:
         tdata.add_item(file, DESTINATION_FOLDER + file.split('/')[-1])
