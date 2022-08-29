@@ -15,10 +15,15 @@ print(SCRIPT_PATH)
 TOKEN_FILE = SCRIPT_PATH + "/refresh-tokens.json"
 print(TOKEN_FILE)
 
-def FileSelector():
+
+def FileSelector(TITLE, MULTIPLEFILES, FILETYPES):
+    """
+    Open a file dialog window to select files to transfer
+    return: a list of files directory
+    """
     root = Tk()
     root.withdraw()
-    file_path = filedialog.askopenfilenames()
+    file_path = filedialog.askopenfilenames(title=TITLE, multiple = MULTIPLEFILES, filetypes=FILETYPES)
     return file_path
 
 
@@ -43,7 +48,7 @@ def update_tokens_file_on_refresh(token_response):
     save_tokens_to_file(TOKEN_FILE, token_response.by_resource_server)
 
 
-def do_native_app_authentication(client_id, redirect_uri, SCOPES, requested_scopes=None):
+def do_native_app_authentication(client_id, redirect_uri, SCOPES):
     """
     Does a Native App authentication flow and returns a
     dict of tokens keyed by service name.
@@ -70,7 +75,7 @@ def TransferGlobus(LAPTOP_ID,
                    SCOPES,
                    DESTINATION_FOLDER):
     """
-   Transfer files located in SOURCE_FOLDER to DESTINATION_FOLDER
+   Transfer selected files with FileSelector() to DESTINATION_FOLDER 
    and wait for the transfer to be completed
    """
     tokens = None
@@ -116,7 +121,7 @@ def TransferGlobus(LAPTOP_ID,
                          label="File Transfer",
                          sync_level="checksum")
 
-    file_to_transfer = FileSelector()
+    file_to_transfer = FileSelector("Select video to analyze ", True, filetypes=[("Video files", ".mp4 .MOV .avi")])
 
     for file in file_to_transfer:
         tdata.add_item(file, DESTINATION_FOLDER + file.split('/')[-1])
@@ -139,6 +144,9 @@ def mkdirGlobus(CLIENT_ID,
                 REDIRECT_URI,
                 SCOPES,
                 PATH_MKDIR):
+    """
+    Make a directory in the endpoint
+    """
     tokens = None
     try:
         # if we already have tokens, load and use them
@@ -187,8 +195,9 @@ def copyGlobus(CLIENT_ID,
                DESTINATION_FOLDER,
                IS_A_FOLDER):
     """
-   Transfer files located in SOURCE_FOLDER to DESTINATI,ON_FOLDER
+   Transfer files located in SOURCE_FOLDER to DESTINATION_FOLDER
    and wait for the transfer to be completed
+   IS_A_FOLDER = True if a directory is copied, and False if file(s) are copied
    """
     tokens = None
     try:
