@@ -1,5 +1,6 @@
 {
 "username": "",
+<<<<<<< HEAD
 "emailNotification":true,
 "emailUser": "",
 "host":"narval.computecanada.ca",
@@ -12,3 +13,16 @@
 "TemporaryFolder":"/home/$USER/scratch",
 "ModelList":{"CPP":"/home/$USER/projects/def-cflores/python_envs/CPPmodel"}
 }
+=======
+ "emailNotification": true,
+ "emailUser": "",
+ "host": "",
+ "port": 22,
+ "user_id": "",
+ "client_id": "",
+ "computecanada_id": "",
+ "TemporaryFolder": "",
+ "script_folder":"",
+ "ModelList": {}
+ }
+>>>>>>> Globus_mkdir
