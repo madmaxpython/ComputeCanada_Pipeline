@@ -1,29 +1,13 @@
-from GlobusTransfer import TransferGlobus
+from GlobusTransfer import TransferGlobus, mkdirGlobus, FileSelector
 from pathlib import Path
 import json
+import os
 from connectcc import ComputeCanadaJob
 
-script_path = str(Path(__file__).parent)
+SCRIPT_PATH = str(Path(__file__).parent)
 
-with open(script_path + '/config.txt', "r") as config_file:
+with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
     config = json.loads(config_file.read())
-
-REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
-
-SCOPES = "urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/a1713da6-098f-40e6-b3aa-034efe8b6e5b/data_access]"
-
-LAPTOP_ID = config["user_id"]
-
-CLIENT_ID = config["client_id"]
-
-COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
-
-USERNAME = config['username']
-
-DESTINATION_FOLDER = config['DestinationFolder'].replace('$USER',USERNAME)
-
-DEEPLODOCUS_FOLDER = config['DeeplodocusFolder'].replace('$USER',USERNAME)
-
 
 if __name__ == "__main__":
 
@@ -31,13 +15,27 @@ if __name__ == "__main__":
         if config[parameter] == '':
             config[parameter] = input('{}? : '.format(parameter))
 
+    LAPTOP_ID = config["user_id"]
+
+    CLIENT_ID = config["client_id"]
+
+    COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
+
+    SCOPES = f"urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/{COMPUTECANADA_ENDPOINT_ID}/data_access]"
+
+    REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
+
+    USERNAME = config['username']
+
     MODEL_PATH = ""
 
+    SCRIPT_FOLDER = config['script_folder']
+
     while MODEL_PATH == "":
-        ASKED_MODEL = str(input("What behavior do you want to analyze? (only CPP for now...) "))
+        ASKED_MODEL = str(input("What behavior do you want to analyze?:\n "))
 
         try:
-            MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER',USERNAME)
+            MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER', USERNAME)
 
         except:
             print("\nModel doesn't exist, select one of the models below:")
@@ -45,16 +43,50 @@ if __name__ == "__main__":
             for MODEL_AVAILABLE in config['ModelList']:
                 print("   - {}".format(MODEL_AVAILABLE))
 
+    JOB_NAME = str(input("Job name: "))
+
+    config["LastJobName"] = JOB_NAME
+
+    strconfig = json.dumps(config)
+
+    with open(SCRIPT_PATH + '/config.txt', 'w') as file:
+        file.write(strconfig)
+
+    JOB_PATH = os.path.join(config['TemporaryFolder'].replace('$USER', USERNAME), JOB_NAME)
+
+    mkdirGlobus(CLIENT_ID,
+                COMPUTECANADA_ENDPOINT_ID,
+                REDIRECT_URI,
+                SCOPES,
+                JOB_PATH)
+
+    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
+                   CLIENT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
+                   REDIRECT_URI,
+                   SCOPES,
+                   MODEL_PATH,
+                   JOB_PATH,
+                   True)
+
     TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECANADA_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
-                   DESTINATION_FOLDER
+                   FileSelector('Select video to analyze', True, [("Video files", ".mp4 .MOV .avi")]),
+                   os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1], 'videos/'),
+                   False
                    )
+    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
+                   CLIENT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
+                   REDIRECT_URI,
+                   SCOPES,
+                   [f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/submit_job.sh",
+                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/requirements.txt",
+                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/Deeplabcut_analysis.py"],
+                   JOB_PATH+'/',
+                   False)
 
-    JOB_NAME = str(input("Job name: "))
-
-    JOB_PATH = config['TemporaryFolder'].replace('$USER',USERNAME) +'/'+ JOB_NAME
-
-    ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, DEEPLODOCUS_FOLDER, DESTINATION_FOLDER, JOB_NAME)
+    ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME)

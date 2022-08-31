@@ -1,13 +1,12 @@
 import paramiko
 
+
 class ComputeCanadaJob:
-    def __init__(self, config, username, model_path, job_path, deeplodocus_path, destination_folder, job_name):
+    def __init__(self, config, username, model_path, job_path, job_name):
         self.config = config
         self.username = username
         self.model_path = model_path
         self.job_path = job_path
-        self.deeplodocus_path = deeplodocus_path
-        self.destination_folder = destination_folder
         self.job_name = job_name
         self.model_name = self.model_path.split('/')[-1]
         self.ssh_connection()
@@ -18,7 +17,7 @@ class ComputeCanadaJob:
 
         while not connection_state:
 
-            self.password = str(input("Password : "))
+            self.password = str(input("Your Compute Canada password : "))
 
             try:
                 self.client = paramiko.SSHClient()
@@ -32,24 +31,14 @@ class ComputeCanadaJob:
 
     def analyze(self):
         print('\nMake sure that you have placed all your videos in the following folder: ')
-        print('/home/{}/projects/def-cflores/{}/videos_to_analyze \n'.format(self.username,self.username))
+        print('/home/{}/projects/def-cflores/{}/videos_to_analyze \n'.format(self.username, self.username))
         print('To analyze a 20 min video of CPP, it takes around 10 min \n ')
 
         time = str(input("Estimated time needed (respect format: HH:MM:SS): "))
 
         spec = ' --time=' + time
 
-        if self.config['emailNotification']:
-            spec += " --mail-user=" + str(self.config['emailUser'])
-
-        self.client.exec_command("mkdir" + " " + self.job_path)
-
-        self.client.exec_command("cp -r " + self.model_path + " " + self.job_path)
-
-        self.client.exec_command("cp -r " + self.deeplodocus_path + " " + self.job_path)
-
-        self.client.exec_command("cp -r " + self.destination_folder + " " + self.job_path + '/' + self.model_name + '/videos')
-
-        self.client.exec_command("sbatch" + spec + " " + self.job_path + "Deeplodocus/bash_deeplodocus.slurm" + " " + self.job_name + ' ' + self.model_name)
+        self.client.exec_command(
+            "sbatch" + spec + " " + self.job_path + "/submit_job.sh" + " " + self.job_name + ' ' + self.model_name)
 
         print("Job sent")
