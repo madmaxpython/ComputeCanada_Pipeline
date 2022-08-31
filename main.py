@@ -9,17 +9,11 @@ SCRIPT_PATH = str(Path(__file__).parent)
 with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
     config = json.loads(config_file.read())
 
-
 if __name__ == "__main__":
 
     for parameter in config:
         if config[parameter] == '':
             config[parameter] = input('{}? : '.format(parameter))
-
-        strconfig = json.dumps(config)
-
-        with open(SCRIPT_PATH + '/config.txt', 'w') as file:
-            file.write(strconfig)
 
     LAPTOP_ID = config["user_id"]
 
@@ -38,7 +32,7 @@ if __name__ == "__main__":
     SCRIPT_FOLDER = config['script_folder']
 
     while MODEL_PATH == "":
-        ASKED_MODEL = str(input("What behavior do you want to analyze? (only CPP for now...) "))
+        ASKED_MODEL = str(input("What behavior do you want to analyze?:\n "))
 
         try:
             MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER', USERNAME)
@@ -50,6 +44,13 @@ if __name__ == "__main__":
                 print("   - {}".format(MODEL_AVAILABLE))
 
     JOB_NAME = str(input("Job name: "))
+
+    config["LastJobName"] = JOB_NAME
+
+    strconfig = json.dumps(config)
+
+    with open(SCRIPT_PATH + '/config.txt', 'w') as file:
+        file.write(strconfig)
 
     JOB_PATH = os.path.join(config['TemporaryFolder'].replace('$USER', USERNAME), JOB_NAME)
 

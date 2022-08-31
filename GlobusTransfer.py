@@ -11,9 +11,8 @@ from utils import is_remote_session
 from pathlib import Path
 
 SCRIPT_PATH = str(Path(__file__).parent)
-print(SCRIPT_PATH)
+
 TOKEN_FILE = SCRIPT_PATH + "/refresh-tokens.json"
-print(TOKEN_FILE)
 
 
 def FileSelector(TITLE, MULTIPLEFILES, FILETYPES):
@@ -128,7 +127,7 @@ def TransferGlobus(LAPTOP_ID,
 
     transfer_result = transfer.submit_transfer(tdata)
     print("_____________________________________________________________")
-    print("Transfering your file to Compute Canada cluster")
+    print("Transferring your file to Compute Canada cluster")
 
     print("task_id =", transfer_result["task_id"])
     print('Files in transfer')
