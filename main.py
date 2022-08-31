@@ -1,4 +1,4 @@
-from GlobusTransfer import TransferGlobus, mkdirGlobus, copyGlobus
+from GlobusTransfer import TransferGlobus, mkdirGlobus, FileSelector
 from pathlib import Path
 import json
 import os
@@ -60,28 +60,33 @@ if __name__ == "__main__":
                 SCOPES,
                 JOB_PATH)
 
-    copyGlobus(CLIENT_ID,
-               COMPUTECANADA_ENDPOINT_ID,
-               REDIRECT_URI,
-               SCOPES,
-               MODEL_PATH,
-               os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1]),
-               True)
+    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
+                   CLIENT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
+                   REDIRECT_URI,
+                   SCOPES,
+                   MODEL_PATH,
+                   JOB_PATH,
+                   True)
 
     TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
                    COMPUTECANADA_ENDPOINT_ID,
                    REDIRECT_URI,
                    SCOPES,
+                   FileSelector('Select video to analyze', True, [("Video files", ".mp4 .MOV .avi")]),
                    os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1], 'videos/'),
+                   False
                    )
-
-    copyGlobus(CLIENT_ID,
-               COMPUTECANADA_ENDPOINT_ID,
-               REDIRECT_URI,
-               SCOPES,
-               SCRIPT_FOLDER.replace('$USER', USERNAME),
-               JOB_PATH,
-               True)
+    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
+                   CLIENT_ID,
+                   COMPUTECANADA_ENDPOINT_ID,
+                   REDIRECT_URI,
+                   SCOPES,
+                   [f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/submit_job.sh",
+                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/requirements.txt",
+                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/Deeplabcut_analysis.py"],
+                   JOB_PATH+'/',
+                   False)
 
     ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME)
