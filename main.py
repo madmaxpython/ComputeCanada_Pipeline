@@ -12,7 +12,7 @@ with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
 if __name__ == "__main__":
 
     for parameter in config:
-        if config[parameter] == '':
+        if config[parameter] == '' and parameter != 'LastJobName':
             config[parameter] = input('{}? : '.format(parameter))
 
     LAPTOP_ID = config["user_id"]

@@ -130,9 +130,11 @@ def TransferGlobus(SOURCE_ENDPOINT_ID,
 
     transfer_result = transfer.submit_transfer(tdata)
     print("_____________________________________________________________")
-    print("Transferring your file to Compute Canada cluster")
+    print("Transferring your file(s)")
+    print('From: ', SOURCE_FOLDER)
+    print('To: ', DESTINATION_FOLDER)
 
-    print("task_id =", transfer_result["task_id"])
+    print("\ntask_id =", transfer_result["task_id"])
     print('Files in transfer')
     while not transfer.task_wait(transfer_result["task_id"], timeout=5):
         pass

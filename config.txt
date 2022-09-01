@@ -1,4 +1,5 @@
 {
+ "username": "",
  "emailNotification": true,
  "emailUser": "",
  "host": "",
@@ -7,6 +8,7 @@
  "client_id": "",
  "computecanada_id": "",
  "TemporaryFolder": "",
- "script_folder":"",
- "ModelList": {}
+ "script_folder": "",
+ "ModelList": {"": ""},
+ "LastJobName": ""
  }
