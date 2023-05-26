@@ -1,44 +1,55 @@
 import paramiko
 
 
-class ComputeCanadaJob:
-    def __init__(self, config, username, model_path, job_path, job_name):
-        self.config = config
+class SSHClient:
+    def __init__(self, hostname, username, model_path, job_path, job_name, private_key_path):
+        self.hostname = hostname
         self.username = username
         self.model_path = model_path
+        self.model_name = self.model_path.split('/')[-1]
         self.job_path = job_path
         self.job_name = job_name
-        self.model_name = self.model_path.split('/')[-1]
-        self.ssh_connection()
-        self.analyze()
+        self.private_key_path = private_key_path
+        self.client = paramiko.SSHClient()
+        self.client.load_system_host_keys()
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    def ssh_connection(self):
-        connection_state = False
+    def connect(self):
+        try:
+            private_key = paramiko.RSAKey.from_private_key_file(self.private_key_path)
+            self.client.connect(self.hostname, username=self.username, pkey=private_key)
+            print("Connected to", self.hostname)
 
-        while not connection_state:
+        except paramiko.AuthenticationException:
+            print("Failed to connect to", self.hostname, "- Invalid credentials.")
 
-            self.password = str(input("Your Compute Canada password : "))
+        except paramiko.SSHException as ssh_exception:
+            print("Failed to connect to", self.hostname, "-", str(ssh_exception))
 
-            try:
-                self.client = paramiko.SSHClient()
-                self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                self.client.connect(self.config['host'], self.config['port'], self.username, self.password)
-                connection_state = True
-                print('Connection established')
+    def execute_command(self, command):
+        stdin, stdout, stderr = self.client.exec_command(command)
+        output = stdout.read().decode()
+        errors = stderr.read().decode()
 
-            except Exception as e:
-                print(e, "Please, verify your password and retry")
+        if output:
+            print(output)
+        if errors:
+            print("Errors:")
+            print(errors)
 
-    def analyze(self):
+    def submit_analysis(self):
         print('\nMake sure that you have placed all your videos in the following folder: ')
         print('/home/{}/projects/def-cflores/{}/videos_to_analyze \n'.format(self.username, self.username))
         print('To analyze a 20 min video of CPP, it takes around 10 min \n ')
 
         time = str(input("Estimated time needed (respect format: HH:MM:SS): "))
-
         spec = ' --time=' + time
 
-        self.client.exec_command(
+        self.execute_command(
             "sbatch" + spec + " " + self.job_path + "/submit_job.sh" + " " + self.job_name + ' ' + self.model_name)
 
-        print("Job sent")
+        self.execute_command('sq')
+
+    def close(self):
+        self.client.close()
+        print("Disconnected from", self.hostname)
