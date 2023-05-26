@@ -1,5 +1,4 @@
-{
- "username": "",
+{"username": "",
  "emailNotification": true,
  "emailUser": "",
  "host": "",
@@ -9,6 +8,7 @@
  "computecanada_id": "",
  "TemporaryFolder": "",
  "script_folder": "",
- "ModelList": {"": ""},
+ "ssh_key_path": "",
+ "ModelList": {},
  "LastJobName": ""
- }
+}
