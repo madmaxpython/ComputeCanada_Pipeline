@@ -1,6 +1,5 @@
 import json
 import sys
-import os
 import webbrowser
 from tkinter import Tk, filedialog
 
@@ -76,7 +75,7 @@ def TransferGlobus(SOURCE_ENDPOINT_ID,
                    DESTINATION_FOLDER,
                    IS_A_FOLDER):
     """
-   Transfer selected files with FileSelector() to DESTINATION_FOLDER 
+   Transfer selected files from SOURCE_FOLDER to DESTINATION_FOLDER
    and wait for the transfer to be completed
    """
     tokens = None
@@ -136,7 +135,7 @@ def TransferGlobus(SOURCE_ENDPOINT_ID,
 
     print("\ntask_id =", transfer_result["task_id"])
     print('Files in transfer')
-    while not transfer.task_wait(transfer_result["task_id"], timeout=5):
+    while not transfer.task_wait(transfer_result["task_id"], timeout=1200, polling_interval=12):
         pass
 
     print("Task completed")
@@ -189,3 +188,59 @@ def mkdirGlobus(CLIENT_ID,
         else:
             raise ex
     transfer.operation_mkdir(COMPUTECANADA_ENDPOINT_ID, PATH_MKDIR)
+
+
+def checkDirGlobus(CLIENT_ID,
+                COMPUTECANADA_ENDPOINT_ID,
+                REDIRECT_URI,
+                SCOPES,
+                PATH_MKDIR):
+    """
+    Make a directory in the endpoint
+    """
+    tokens = None
+    try:
+        # if we already have tokens, load and use them
+        tokens = load_tokens_from_file(TOKEN_FILE)
+    except:
+        pass
+
+    if not tokens:
+        # if we need to get tokens, start the Native App authentication process
+        tokens = do_native_app_authentication(CLIENT_ID, REDIRECT_URI, SCOPES)
+        try:
+            save_tokens_to_file(TOKEN_FILE, tokens)
+        except:
+            pass
+
+    transfer_tokens = tokens["transfer.api.globus.org"]
+    auth_client = NativeAppAuthClient(client_id=CLIENT_ID)
+
+    authorizer = RefreshTokenAuthorizer(
+        transfer_tokens["refresh_token"],
+        auth_client,
+        access_token=transfer_tokens["access_token"],
+        expires_at=transfer_tokens["expires_at_seconds"],
+        on_refresh=update_tokens_file_on_refresh, )
+
+    transfer = TransferClient(authorizer=authorizer)
+    try:
+        transfer.endpoint_autoactivate(COMPUTECANADA_ENDPOINT_ID)
+    except GlobusAPIError as ex:
+        print(ex)
+        if ex.http_status == 401:
+            sys.exit(
+                "Refresh token has expired. "
+                "Please delete refresh-tokens.json and try again."
+            )
+        else:
+            raise ex
+
+    # Check if the folder exists
+    try:
+        transfer.operation_ls(endpoint_id=COMPUTECANADA_ENDPOINT_ID, path=PATH_MKDIR)
+        print(f"{PATH_MKDIR} exists.")
+        return True
+    except GlobusAPIError as e:
+            print(f"{PATH_MKDIR} does not exist.")
+            return False
