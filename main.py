@@ -2,7 +2,7 @@ from GlobusTransfer import TransferGlobus, mkdirGlobus, FileSelector
 from pathlib import Path
 import json
 import os
-from connectcc import ComputeCanadaJob
+from connectcc import SSHClient
 
 SCRIPT_PATH = str(Path(__file__).parent)
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
     LAPTOP_ID = config["user_id"]
 
     CLIENT_ID = config["client_id"]
+    SSHKEY_PATH = config['ssh_key_path']
 
     COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
 
@@ -67,7 +68,8 @@ if __name__ == "__main__":
                    SCOPES,
                    MODEL_PATH,
                    JOB_PATH,
-                   True)
+                   True
+                   )
 
     TransferGlobus(LAPTOP_ID,
                    CLIENT_ID,
@@ -89,4 +91,7 @@ if __name__ == "__main__":
                    JOB_PATH+'/',
                    False)
 
-    ComputeCanadaJob(config, USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME)
+    ssh = SSHClient(config['host'], USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME, SSHKEY_PATH)
+    ssh.connect()
+    ssh.submit_analysis()
+    ssh.close()
