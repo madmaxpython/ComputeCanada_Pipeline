@@ -1,8 +1,7 @@
-from GlobusTransfer import TransferGlobus, mkdirGlobus, FileSelector
+from GlobusTransfer import GlobusSession, FileSelector
+from ScriptSSH import SSHClient
 from pathlib import Path
 import json
-import os
-from connectcc import SSHClient
 
 SCRIPT_PATH = str(Path(__file__).parent)
 
@@ -11,6 +10,10 @@ with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
 
 if __name__ == "__main__":
 
+    ###
+    # Load useful variables for SSH connection and Globus File Transfer
+    ###
+
     for parameter in config:
         if config[parameter] == '' and parameter != 'LastJobName':
             config[parameter] = input('{}? : '.format(parameter))
@@ -18,19 +21,18 @@ if __name__ == "__main__":
     LAPTOP_ID = config["user_id"]
 
     CLIENT_ID = config["client_id"]
-    SSHKEY_PATH = config['ssh_key_path']
 
     COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
 
-    SCOPES = f"urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/{COMPUTECANADA_ENDPOINT_ID}/data_access]"
+    SSHKEY_PATH = config['ssh_key_path']
+
+    SCOPES = f"urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/{COMPUTECANADA_ENDPOINT_ID}/data_access] "
 
     REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
 
     USERNAME = config['username']
 
     MODEL_PATH = ""
-
-    SCRIPT_FOLDER = config['script_folder']
 
     while MODEL_PATH == "":
         ASKED_MODEL = str(input("What behavior do you want to analyze?:\n "))
@@ -53,45 +55,36 @@ if __name__ == "__main__":
     with open(SCRIPT_PATH + '/config.txt', 'w') as file:
         file.write(strconfig)
 
-    JOB_PATH = os.path.join(config['TemporaryFolder'].replace('$USER', USERNAME), JOB_NAME)
+    JOB_PATH = f"{config['TemporaryFolder'].replace('$USER', USERNAME)}/{JOB_NAME}"
 
-    mkdirGlobus(CLIENT_ID,
-                COMPUTECANADA_ENDPOINT_ID,
-                REDIRECT_URI,
-                SCOPES,
-                JOB_PATH)
+    ###
+    # Authentication to Globus session, creation of project folder and transfer of files
+    ###
 
-    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
-                   CLIENT_ID,
-                   COMPUTECANADA_ENDPOINT_ID,
-                   REDIRECT_URI,
-                   SCOPES,
-                   MODEL_PATH,
-                   JOB_PATH,
-                   True
-                   )
+    globus = GlobusSession(CLIENT_ID, COMPUTECANADA_ENDPOINT_ID, REDIRECT_URI, SCOPES)
 
-    TransferGlobus(LAPTOP_ID,
-                   CLIENT_ID,
-                   COMPUTECANADA_ENDPOINT_ID,
-                   REDIRECT_URI,
-                   SCOPES,
-                   FileSelector('Select video to analyze', True, [("Video files", ".mp4 .MOV .avi")]),
-                   os.path.join(JOB_PATH, MODEL_PATH.split('/')[-1], 'videos/'),
-                   False
-                   )
-    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
-                   CLIENT_ID,
-                   COMPUTECANADA_ENDPOINT_ID,
-                   REDIRECT_URI,
-                   SCOPES,
-                   [f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/submit_job.sh",
-                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/requirements.txt",
-                    f"{SCRIPT_FOLDER.replace('$USER', USERNAME)}/Deeplabcut_analysis.py"],
-                   JOB_PATH+'/',
-                   False)
+    globus.mkdir(JOB_PATH)
 
-    ssh = SSHClient(config['host'], USERNAME, MODEL_PATH, JOB_PATH, JOB_NAME, SSHKEY_PATH)
+    globus.mkdir(f"{JOB_PATH}/videos/")
+
+    globus.TransferData(LAPTOP_ID,
+                        COMPUTECANADA_ENDPOINT_ID,
+                        FileSelector('Select video to analyze', True, [("Video files", ".mp4 .MOV .avi .h264")]),
+                        f"{JOB_PATH}/videos/",
+                        False
+                        )
+
+    ###
+    # Establish Secure Shell (SSH) communication and execution submission of job (using sbatch)
+    ###
+
+    ssh = SSHClient(config['host'],
+                    USERNAME,
+                    MODEL_PATH,
+                    JOB_NAME,
+                    SSHKEY_PATH,
+                    config['script_folder'])
+
     ssh.connect()
     ssh.submit_analysis()
     ssh.close()
