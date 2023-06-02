@@ -36,7 +36,6 @@ class GlobusSession:
         self.REDIRECT_URI = REDIRECT_URI
         self.SCOPES = SCOPES
         self.transfer_client = self.get_transfer_client()
-        print(type(self.transfer_client))
 
     @staticmethod
     def load_tokens_from_file(filepath):
