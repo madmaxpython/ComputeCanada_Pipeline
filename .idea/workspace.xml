@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ddd72841-9ae9-450a-a211-d489c4294370" name="Changes" comment="Reformarting input of user">
-      <change beforePath="$PROJECT_DIR$/.idea/ComputeCanadaPipeline.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ComputeCanadaPipeline.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GlobusTransfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/GlobusTransfer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connectcc.py" beforeDir="false" afterPath="$PROJECT_DIR$/connectcc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/refresh-tokens.json" beforeDir="false" afterPath="$PROJECT_DIR$/refresh-tokens.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +29,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/GlobusTransfer.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/config.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/connectcc.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ScriptSSH.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/main.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -109,6 +106,23 @@
       <workItem from="1685023331657" duration="7231000" />
       <workItem from="1685039783211" duration="939000" />
       <workItem from="1685043537277" duration="4000" />
+      <workItem from="1685110184263" duration="38000" />
+      <workItem from="1685110562054" duration="124000" />
+      <workItem from="1685123170686" duration="9000" />
+      <workItem from="1685367631314" duration="1164000" />
+      <workItem from="1685371098169" duration="2392000" />
+      <workItem from="1685394085478" duration="115000" />
+      <workItem from="1685461503877" duration="945000" />
+      <workItem from="1685645579229" duration="4091000" />
+      <workItem from="1685660716556" duration="2498000" />
+      <workItem from="1685667219835" duration="36000" />
+      <workItem from="1685667270524" duration="255000" />
+      <workItem from="1685667600950" duration="54000" />
+      <workItem from="1685735862284" duration="14000" />
+      <workItem from="1685735893416" duration="52000" />
+      <workItem from="1685735949957" duration="24000" />
+      <workItem from="1685735978714" duration="63000" />
+      <workItem from="1685736058161" duration="2648000" />
     </task>
     <task id="LOCAL-00001" summary="Reformarting input of user">
       <created>1662056910564</created>
@@ -142,9 +156,9 @@
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$keyinteractiv.coverage" NAME="keyinteractiv Coverage Results" MODIFIED="1685027313708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$go.coverage" NAME="go Coverage Results" MODIFIED="1684164732668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$csv2pickle.coverage" NAME="csv2pickle Coverage Results" MODIFIED="1684170618261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$main.coverage" NAME="main Coverage Results" MODIFIED="1685029130753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$main.coverage" NAME="main Coverage Results" MODIFIED="1685738360850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$raspebery_pipeline.coverage" NAME="raspebery_pipeline Coverage Results" MODIFIED="1685029879152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$test.coverage" NAME="test Coverage Results" MODIFIED="1685028305256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$test.coverage" NAME="test Coverage Results" MODIFIED="1685737890233" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$RetrieveData.coverage" NAME="RetrieveData Coverage Results" MODIFIED="1678806081957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ComputeCanadaPipeline$connectcc.coverage" NAME="connectcc Coverage Results" MODIFIED="1685020565037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
