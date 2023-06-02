@@ -2,12 +2,11 @@ import paramiko
 
 
 class SSHClient:
-    def __init__(self, hostname, username, model_path, job_path, job_name, private_key_path):
+    def __init__(self, hostname, username, model_path, job_name, private_key_path, script_path):
         self.hostname = hostname
         self.username = username
-        self.model_path = model_path
-        self.model_name = self.model_path.split('/')[-1]
-        self.job_path = job_path
+        self.script_path = script_path
+        self.model_name = model_path.split('/')[-1]
         self.job_name = job_name
         self.private_key_path = private_key_path
         self.client = paramiko.SSHClient()
@@ -39,14 +38,14 @@ class SSHClient:
 
     def submit_analysis(self):
         print('\nMake sure that you have placed all your videos in the following folder: ')
-        print('/home/{}/projects/def-cflores/{}/videos_to_analyze \n'.format(self.username, self.username))
-        print('To analyze a 20 min video of CPP, it takes around 10 min \n ')
+        print(f'/home/{self.username}/projects/def-cflores/{self.username}/videos_to_analyze \n')
+        print('To analyze a 20 min video of CPP, it takes around 10 min\n ')
 
         time = str(input("Estimated time needed (respect format: HH:MM:SS): "))
         spec = ' --time=' + time
 
         self.execute_command(
-            "sbatch" + spec + " " + self.job_path + "/submit_job.sh" + " " + self.job_name + ' ' + self.model_name)
+            "sbatch" + spec + " " + self.script_path + "/submit_job.sh" + " " + self.job_name + ' ' + self.model_name)
 
         self.execute_command('sq')
 

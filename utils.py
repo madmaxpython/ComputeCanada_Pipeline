@@ -6,7 +6,8 @@ import ssl
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
-
+from pathlib import Path
+import yaml
 
 def enable_requests_logging():
     http.client.HTTPConnection.debuglevel = 4
@@ -61,3 +62,17 @@ def start_local_server(listen=("", 4443)):
     thread.start()
 
     return server
+
+class YAMLReader(dict):
+    def __init__(self):
+        self.SCRIPT_PATH = str(Path(__file__).parent)
+        self.yaml_file = f'{self.SCRIPT_PATH}/config.yaml'
+
+        with open(self.yaml_file) as f:
+            yaml_dict = yaml.safe_load(f)
+            super().__init__(yaml_dict)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        with open(self.yaml_file, 'w') as f:
+            yaml.dump(dict(self), f)
