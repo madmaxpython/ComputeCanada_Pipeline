@@ -11,21 +11,17 @@ if __name__ == "__main__":
     # Load useful variables for SSH connection and Globus File Transfer
     ###
 
-    config = YAMLReader()
+    config = YAMLReader(f'{SCRIPT_PATH}/config.yaml')
 
-    for parameter in config:
-        if config[parameter] == '' and parameter != 'LastJobName':
-            config[parameter] = input('{}? : '.format(parameter))
+    LAPTOP_ID = config["user_id"]
 
-    LAPTOP_ID = config["ID"]["user_id"]
+    CLIENT_ID = config["client_id"]
 
-    CLIENT_ID = config["ID"]["client_id"]
-
-    COMPUTECANADA_ENDPOINT_ID = config["ID"]["endpoint_id"]
+    COMPUTECANADA_ENDPOINT_ID = config["endpoint_id"]
 
     SSHKEY_PATH = config['ssh_key_path']
 
-    SCOPES = config["scopes"]
+    SCOPES = config["scopes"].replace('ENDPOINT_ID', COMPUTECANADA_ENDPOINT_ID)
 
     REDIRECT_URL = config["redirect_url"]
 
@@ -36,7 +32,7 @@ if __name__ == "__main__":
     MODEL_PATH = ""
 
     while MODEL_PATH == "":
-        ASKED_MODEL = str(input("What behavior do you want to analyze?:\n "))
+        ASKED_MODEL = str(input("What behavior do you want to analyze?:\n"))
 
         try:
             MODEL_PATH = config['ModelList'][ASKED_MODEL].replace('$USER', USERNAME)
@@ -51,11 +47,12 @@ if __name__ == "__main__":
         JOB_NAME = str(input("Job name: "))
 
         JOB_PATH = f"{config['TemporaryFolder'].replace('$USER', USERNAME)}/{JOB_NAME}"
-        if globus.checkDir(JOB_PATH):
-            print("A project already has this name")
+
+        if not globus.checkDir(JOB_PATH):
+            break
 
         else:
-            break
+            print("A project already has this name")
 
     config["LastJobName"] = JOB_NAME
 
