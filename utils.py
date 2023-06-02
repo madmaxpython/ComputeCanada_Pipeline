@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 import yaml
 
+
 def enable_requests_logging():
     http.client.HTTPConnection.debuglevel = 4
 
@@ -63,16 +64,28 @@ def start_local_server(listen=("", 4443)):
 
     return server
 
-class YAMLReader(dict):
-    def __init__(self):
-        self.SCRIPT_PATH = str(Path(__file__).parent)
-        self.yaml_file = f'{self.SCRIPT_PATH}/config.yaml'
+class YAMLReader:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.data = self._read_yaml()
+        self.check_variables()
+    def _read_yaml(self):
+        with open(self.file_path, 'r') as file:
+            return yaml.safe_load(file)
 
-        with open(self.yaml_file) as f:
-            yaml_dict = yaml.safe_load(f)
-            super().__init__(yaml_dict)
+    def _write_yaml(self):
+        with open(self.file_path, 'w') as file:
+            yaml.dump(self.data, file, default_flow_style=False)
+
+    def check_variables(self):
+        for key, value in self.data.items():
+            if not value:
+                user_input = input(f"Enter value for '{key}': ")
+                self[key] = user_input
+    def __getitem__(self, key):
+        return self.data[key]
 
     def __setitem__(self, key, value):
-        super().__setitem__(key, value)
-        with open(self.yaml_file, 'w') as f:
-            yaml.dump(dict(self), f)
+        self.data[key] = value
+        self._write_yaml()
+
