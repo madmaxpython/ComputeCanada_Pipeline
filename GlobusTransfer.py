@@ -132,6 +132,7 @@ class GlobusSession:
         """
         Make a directory in the endpoint if it doesn't exist yet
         """
+
         if self.checkDir(PATH_MKDIR):
             print(f"{PATH_MKDIR} already exists")
         else:
