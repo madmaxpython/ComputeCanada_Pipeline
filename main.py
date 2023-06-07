@@ -11,21 +11,21 @@ if __name__ == "__main__":
     # Load useful variables for SSH connection and Globus File Transfer
     ###
 
-    config = YAMLReader()
+    config = YAMLReader(SCRIPT_PATH)
 
     for parameter in config:
         if config[parameter] == '' and parameter != 'LastJobName':
             config[parameter] = input('{}? : '.format(parameter))
 
-    LAPTOP_ID = config["ID"]["user_id"]
+    LAPTOP_ID = config["user_id"]
 
-    CLIENT_ID = config["ID"]["client_id"]
+    CLIENT_ID = config["client_id"]
 
-    COMPUTECANADA_ENDPOINT_ID = config["ID"]["endpoint_id"]
+    COMPUTECANADA_ENDPOINT_ID = config["endpoint_id"]
 
     SSHKEY_PATH = config['ssh_key_path']
 
-    SCOPES = config["scopes"]
+    SCOPES = config["scopes"].replace('ENDPOINT_ID', COMPUTECANADA_ENDPOINT_ID)
 
     REDIRECT_URL = config["redirect_url"]
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     globus.TransferData(LAPTOP_ID,
                         COMPUTECANADA_ENDPOINT_ID,
-                        FileSelector('Select video to analyze', True, [("Video files", ".csv")]),
+                        FileSelector('Select video to analyze', True, [("Video files", ".mp4 .avi")]),
                         f"{JOB_PATH}/videos/",
                         False
                         )
