@@ -64,10 +64,8 @@ def start_local_server(listen=("", 4443)):
     return server
 
 class YAMLReader(dict):
-    def __init__(self):
-        self.SCRIPT_PATH = str(Path(__file__).parent)
-        self.yaml_file = f'{self.SCRIPT_PATH}/config.yaml'
-
+    def __init__(self, SCRIPT_PATH):
+        self.yaml_file = f'{SCRIPT_PATH}/config.yaml'
         with open(self.yaml_file) as f:
             yaml_dict = yaml.safe_load(f)
             super().__init__(yaml_dict)
