@@ -17,11 +17,11 @@ if __name__ == "__main__":
         if config[parameter] == '' and parameter != 'LastJobName':
             config[parameter] = input('{}? : '.format(parameter))
 
-    LAPTOP_ID = config["user_id"]
+    LAPTOP_ID = config['ID']["user"]
 
-    CLIENT_ID = config["client_id"]
+    CLIENT_ID = config['ID']["client"]
 
-    COMPUTECANADA_ENDPOINT_ID = config["endpoint_id"]
+    COMPUTECANADA_ENDPOINT_ID = config['ID']["endpoint"]
 
     SSHKEY_PATH = config['ssh_key_path']
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     globus.TransferData(LAPTOP_ID,
                         COMPUTECANADA_ENDPOINT_ID,
-                        FileSelector('Select video to analyze', True, [("Video files", ".mp4 .avi")]),
+                        FileSelector('Select video to analyze', True, [("Video files", ".mp4 .avi .h264")]),
                         f"{JOB_PATH}/videos/",
                         False
                         )

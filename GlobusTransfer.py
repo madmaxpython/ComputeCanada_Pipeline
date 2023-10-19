@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 def FileSelector(TITLE, MULTIPLEFILES, FILETYPES):
+    import platform
     """
     Open a file dialog window to select files to transfer
     return: a list of files directory
@@ -18,6 +19,11 @@ def FileSelector(TITLE, MULTIPLEFILES, FILETYPES):
     root = Tk()
     root.withdraw()
     file_path = filedialog.askopenfilenames(title=TITLE, multiple=MULTIPLEFILES, filetypes=FILETYPES)
+
+    if platform.system() == 'Windows':
+        import re
+        print("Windows user detected")
+        file_path = tuple([re.sub(r'(:)/', r'\1', path) for path in file_path])
     return file_path
 
 
