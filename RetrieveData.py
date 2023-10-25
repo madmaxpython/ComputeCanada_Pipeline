@@ -3,24 +3,26 @@ import json
 from pathlib import Path
 from tkinter import Tk, filedialog
 from distutils.util import strtobool
-from GlobusTransfer import TransferGlobus
+from GlobusTransfer import GlobusSession
+from utils import YAMLReader
 
 SCRIPT_PATH = str(Path(__file__).parent)
 
-with open(SCRIPT_PATH + '/config.txt', "r") as config_file:
-    config = json.loads(config_file.read())
+config = YAMLReader(SCRIPT_PATH)
 
-LAPTOP_ID = config["user_id"]
+LAPTOP_ID = config['ID']["user"]
 
-CLIENT_ID = config["client_id"]
+CLIENT_ID = config['ID']["client"]
 
-COMPUTECANADA_ENDPOINT_ID = config["computecanada_id"]
+COMPUTECANADA_ENDPOINT_ID = config['ID']["endpoint"]
+
+SCOPES = config["scopes"].replace('ENDPOINT_ID', COMPUTECANADA_ENDPOINT_ID)
+
+REDIRECT_URL = config["redirect_url"]
+
+globus = GlobusSession(CLIENT_ID, COMPUTECANADA_ENDPOINT_ID, REDIRECT_URL, SCOPES)
 
 USERNAME = config['username']
-
-SCOPES = f"urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/{COMPUTECANADA_ENDPOINT_ID}/data_access] "
-
-REDIRECT_URI = "https://auth.globus.org/v2/web/auth-code"
 
 
 def DirectorySelector(TITLE):
@@ -41,25 +43,21 @@ if __name__ == '__main__':
     if JOB_NAME == '':
         JOB_NAME = config["LastJobName"]
 
-    T_VIDEO = strtobool(input('Do you want the video(s) too (True/False): '))
+    transfert_video = strtobool(input('Do you want the video(s) too (True/False): '))
 
     JOB_PATH = f"{config['TemporaryFolder'].replace('$USER', USERNAME)}/{JOB_NAME}"
 
-    TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
-                   CLIENT_ID,
-                   LAPTOP_ID,
-                   REDIRECT_URI,
-                   SCOPES,
-                   f'{JOB_PATH}/csvfiles',
-                   f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
-                   True)
+    globus = GlobusSession(CLIENT_ID, COMPUTECANADA_ENDPOINT_ID, REDIRECT_URL, SCOPES)
 
-    if T_VIDEO:
-        TransferGlobus(COMPUTECANADA_ENDPOINT_ID,
-                       CLIENT_ID,
-                       LAPTOP_ID,
-                       REDIRECT_URI,
-                       SCOPES,
-                       f'{JOB_PATH}/videos',
-                       f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
-                       True)
+    globus.TransferData(COMPUTECANADA_ENDPOINT_ID,
+                        LAPTOP_ID,
+                        f'{JOB_PATH}/csvfiles',
+                        f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
+                        True)
+
+    if transfert_video:
+        globus.TransferData(COMPUTECANADA_ENDPOINT_ID,
+                            LAPTOP_ID,
+                            f'{JOB_PATH}/csvfiles',
+                            f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
+                            True)
