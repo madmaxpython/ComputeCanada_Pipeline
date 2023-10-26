@@ -4,7 +4,7 @@ from pathlib import Path
 from tkinter import Tk, filedialog
 from distutils.util import strtobool
 from GlobusTransfer import GlobusSession
-from utils import YAMLReader
+from utils import YAMLReader, directory_parser
 
 SCRIPT_PATH = str(Path(__file__).parent)
 
@@ -25,7 +25,7 @@ globus = GlobusSession(CLIENT_ID, COMPUTECANADA_ENDPOINT_ID, REDIRECT_URL, SCOPE
 USERNAME = config['username']
 
 
-def DirectorySelector(TITLE):
+def directory_selector(TITLE):
     """
     Open a file dialog window to select files to transfer
     return: a list of files directory
@@ -45,19 +45,19 @@ if __name__ == '__main__':
 
     transfert_video = strtobool(input('Do you want the video(s) too (True/False): '))
 
-    JOB_PATH = f"{config['TemporaryFolder'].replace('$USER', USERNAME)}/{JOB_NAME}"
+    JOB_PATH = f"{config['Folders']['cc_user'].replace('$USER', USERNAME)}/{JOB_NAME}"
 
     globus = GlobusSession(CLIENT_ID, COMPUTECANADA_ENDPOINT_ID, REDIRECT_URL, SCOPES)
 
     globus.TransferData(COMPUTECANADA_ENDPOINT_ID,
                         LAPTOP_ID,
                         f'{JOB_PATH}/csvfiles',
-                        f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
+                        f"{directory_parser(directory_selector('Directory for the files'))}/{JOB_NAME}",
                         True)
 
     if transfert_video:
         globus.TransferData(COMPUTECANADA_ENDPOINT_ID,
                             LAPTOP_ID,
-                            f'{JOB_PATH}/csvfiles',
-                            f"{DirectorySelector('Directory for the files')}/{JOB_NAME}",
+                            f'{JOB_PATH}/videos/',
+                            f"{directory_parser(directory_selector('Directory for the files'))}/{JOB_NAME}",
                             True)

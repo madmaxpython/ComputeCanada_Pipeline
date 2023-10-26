@@ -6,7 +6,7 @@ from tkinter import Tk, filedialog
 from globus_sdk import NativeAppAuthClient, TransferClient, TransferData, RefreshTokenAuthorizer
 from globus_sdk.exc import GlobusAPIError
 
-from utils import is_remote_session
+from utils import is_remote_session, directory_parser
 from pathlib import Path
 
 
@@ -19,11 +19,8 @@ def FileSelector(TITLE, MULTIPLEFILES, FILETYPES):
     root = Tk()
     root.withdraw()
     file_path = filedialog.askopenfilenames(title=TITLE, multiple=MULTIPLEFILES, filetypes=FILETYPES)
+    file_path = directory_parser(file_path)
 
-    if platform.system() == 'Windows':
-        import re
-        print("Windows user detected")
-        file_path = tuple([re.sub(r'(:)/', r'\1', path) for path in file_path])
     return file_path
 
 

@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 import yaml
 
+
 def enable_requests_logging():
     http.client.HTTPConnection.debuglevel = 4
 
@@ -60,8 +61,17 @@ def start_local_server(listen=("", 4443)):
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True
     thread.start()
-
     return server
+
+
+def directory_parser(directory):
+    import platform
+    if platform.system() == 'Windows':
+        import re
+        print("Windows user detected")
+        directory = tuple([re.sub(r'(:)/', r'\1', path) for path in directory])
+    return directory
+
 
 class YAMLReader(dict):
     def __init__(self, SCRIPT_PATH):
