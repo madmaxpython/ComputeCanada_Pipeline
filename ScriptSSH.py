@@ -37,10 +37,6 @@ class SSHClient:
             print(errors)
 
     def submit_analysis(self):
-        print('\nMake sure that you have placed all your videos in the following folder: ')
-        print(f'/home/{self.username}/projects/def-cflores/{self.username}/videos_to_analyze \n')
-        print('To analyze a 20 min video of CPP, it takes around 10 min\n ')
-
         time = str(input("Estimated time needed (respect format: HH:MM:SS): "))
         spec = ' --time=' + time
 

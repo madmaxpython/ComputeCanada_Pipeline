@@ -1,15 +1,16 @@
+Folders:
+  cc_script:
+  cc_user:
+  ssh_key:
 ID:
   client:
   endpoint:
   user:
 LastJobName:
 ModelList:
-  MODEL : path
-TemporaryFolder:
+  model: model/path
 host:
 port: 22
 redirect_url: https://auth.globus.org/v2/web/auth-code
 scopes: urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/ENDPOINT_ID/data_access]
-script_folder:
-ssh_key_path:
 username:

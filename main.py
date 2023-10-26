@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     COMPUTECANADA_ENDPOINT_ID = config['ID']["endpoint"]
 
-    SSHKEY_PATH = config['ssh_key_path']
+    SSHKEY_PATH = config['Folders']['ssh_key']
 
     SCOPES = config["scopes"].replace('ENDPOINT_ID', COMPUTECANADA_ENDPOINT_ID)
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     while True:
         JOB_NAME = str(input("Job name: "))
 
-        JOB_PATH = f"{config['TemporaryFolder'].replace('$USER', USERNAME)}/{JOB_NAME}"
+        JOB_PATH = f"{config['Folders']['cc_user'].replace('$USER', USERNAME)}/{JOB_NAME}"
         if globus.checkDir(JOB_PATH):
             print("A project already has this name")
 
@@ -83,8 +83,9 @@ if __name__ == "__main__":
                     MODEL_PATH,
                     JOB_NAME,
                     SSHKEY_PATH,
-                    config['script_folder'])
+                    config['Folders']['cc_script'])
 
     ssh.connect()
+    print('To analyze a 20-min CPP video, it takes around 10 min\n ')
     ssh.submit_analysis()
     ssh.close()
