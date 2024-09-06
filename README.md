@@ -4,7 +4,8 @@ Pipeline between user machine and compute canada, using globus.
 #Setting up Config.yaml file
 
 Folders:
-  cc_script: <em>Folder containing the script to execute for analysis</em>
+
+cc_script: <em>Folder containing the script to execute for analysis</em>
   cc_user: <em>User's personal space, $USER will be remplace by user name (ex:/home/$USER/projects/sponsor/$USER) </em>
   ssh_key: <em>path to ssh key (id_rsa)</em>
 ID:
