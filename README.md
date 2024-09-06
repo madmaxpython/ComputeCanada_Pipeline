@@ -1,8 +1,8 @@
 # ComputeCanada_Pipeline
-Pipeline between user machine and compute canada, using globus
+Pipeline between user machine and compute canada, using globus.
 
 #Setting up Config.yaml file
-<em></em>
+
 Folders:
   cc_script: <em>Folder containing the script to execute for analysis</em>
   cc_user: <em>User's personal space, $USER will be remplace by user name (ex:/home/$USER/projects/sponsor/$USER) </em>
